@@ -9,7 +9,7 @@ class Node:
         self.__connectedNodes__ = []
 
     def connect(self, other, bidirect=False):
-        if type(other) is not Node:
+        if not isinstance(other, Node):
             raise ValueError("Wrong type of " + str(other) + ". Must be a granavi.Node")
         if other not in self.__connectedNodes__:
             self.__connectedNodes__.append(other)

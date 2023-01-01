@@ -59,7 +59,7 @@ class NodeTest(unittest.TestCase):
 
     def test_node_name_and_description_is_string(self):
         for n, d in [["name", 13], [13, "hi"]]:
-            with self.assertRaises(Exception):
+            with self.assertRaises(ValueError):
                 cur = granavi.Node(n, d)
 
     def test_search(self):
@@ -73,3 +73,11 @@ class NodeTest(unittest.TestCase):
         self.assertEqual(node_1.search("hallo"), [node_2])
         self.assertEqual(node_1.search("welt"), [node_3])
         self.assertEqual(node_1.search(lambda n: n.name.find("hallo") > -1), [node_2])
+
+    def test_subclass(self):
+        node_1 = granavi.Node("1")
+        class TestNode(granavi.Node):
+            pass
+        node_2 = TestNode("hallo")
+        node_1.connect(node_2)
+        self.assertEqual(node_1.pathTo(node_2), [node_1, node_2])
