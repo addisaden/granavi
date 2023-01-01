@@ -56,3 +56,20 @@ class NodeTest(unittest.TestCase):
         node_1.connect(node_2, bidirect=True)
         self.assertTrue(node_1.isConnected(node_2))
         self.assertTrue(node_2.isConnected(node_1))
+
+    def test_node_name_and_description_is_string(self):
+        for n, d in [["name", 13], [13, "hi"]]:
+            with self.assertRaises(Exception):
+                cur = granavi.Node(n, d)
+
+    def test_search(self):
+        node_1 = granavi.Node("1")
+        node_2 = granavi.Node("xyz hallo")
+        node_3 = granavi.Node("2", "xyz welt xyz")
+
+        node_1.connect(node_2)
+        node_2.connect(node_3)
+
+        self.assertEqual(node_1.search("hallo"), [node_2])
+        self.assertEqual(node_1.search("welt"), [node_3])
+        self.assertEqual(node_1.search(lambda n: n.name.find("hallo") > -1), [node_2])
