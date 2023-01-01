@@ -41,3 +41,12 @@ class NodeTest(unittest.TestCase):
         self.assertTrue(node_1_repr.find("nodeName") > -1)
         self.assertTrue(node_1_repr.find(hex(id(node_1))) > -1)
         self.assertTrue(node_1_repr.find(".".join([node_1.__class__.__module__, node_1.__class__.__name__])) > -1)
+
+    def test_disconnect(self):
+        node_1 = granavi.Node("1")
+        node_2 = granavi.Node("2")
+        node_1.connect(node_2)
+        self.assertTrue(node_1.isConnected(node_2))
+        node_1.disconnect(node_2)
+        self.assertFalse(node_1.isConnected(node_2))
+

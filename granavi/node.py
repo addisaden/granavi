@@ -7,7 +7,11 @@ class Node:
     def connect(self, other):
         if type(other) is not Node:
             raise ValueError("Wrong type of " + str(other) + ". Must be a granavi.Node")
-        self.__connectedNodes__.append(other)
+        if other not in self.__connectedNodes__:
+            self.__connectedNodes__.append(other)
+
+    def disconnect(self, other):
+        self.__connectedNodes__.remove(other)
 
     def isConnected(self, other):
         return (other in self.__connectedNodes__)
