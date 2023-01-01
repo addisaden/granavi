@@ -50,3 +50,9 @@ class NodeTest(unittest.TestCase):
         node_1.disconnect(node_2)
         self.assertFalse(node_1.isConnected(node_2))
 
+    def test_bidirectional_connections(self):
+        node_1 = granavi.Node("1")
+        node_2 = granavi.Node("2")
+        node_1.connect(node_2, bidirect=True)
+        self.assertTrue(node_1.isConnected(node_2))
+        self.assertTrue(node_2.isConnected(node_1))

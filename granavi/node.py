@@ -4,11 +4,13 @@ class Node:
         self.description = description
         self.__connectedNodes__ = []
 
-    def connect(self, other):
+    def connect(self, other, bidirect=False):
         if type(other) is not Node:
             raise ValueError("Wrong type of " + str(other) + ". Must be a granavi.Node")
         if other not in self.__connectedNodes__:
             self.__connectedNodes__.append(other)
+        if bidirect:
+            other.connect(self)
 
     def disconnect(self, other):
         self.__connectedNodes__.remove(other)
