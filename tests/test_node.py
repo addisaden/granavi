@@ -1,0 +1,27 @@
+import unittest
+from context import granavi
+
+class NodeTest(unittest.TestCase):
+    def test_example(self):
+        self.assertEqual(770 + 7, 777)
+
+    def test_create_node(self):
+        name_of_node = "Example"
+        description_of_node = "This is an example node"
+        example_node = granavi.Node(name_of_node, description=description_of_node)
+        example_node_2 = granavi.Node(name_of_node)
+        self.assertEqual(example_node.name, name_of_node)
+        self.assertEqual(example_node.description, description_of_node)
+        self.assertEqual(example_node_2.name, name_of_node)
+        self.assertEqual(example_node_2.description, None)
+
+    def test_connect_2_nodes(self):
+        node_1 = granavi.Node("Hello")
+        node_2 = granavi.Node("World")
+        node_1.connect(node_2)
+        for wrongNode in ["hallo", 13, 3.3, ["node", 1]]:
+            with self.assertRaises(ValueError):
+                node_1.connect(wrongNode)
+        self.assertTrue(node_1.isConnected(node_2))
+        self.assertTrue(node_2 in node_1.connectedNodes())
+        
