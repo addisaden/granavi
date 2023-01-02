@@ -35,6 +35,15 @@ class NodeTest(unittest.TestCase):
         node_1.connect(node_3)
         self.assertEqual(node_1.pathTo(node_3), [node_1, node_3])
 
+    def test_shortest_path(self):
+        nodes = [granavi.Node(str(i)) for i in range(8)]
+        # 0-1-2-3-7
+        # |\-4---/|
+        # \-5-6---/
+        for a, b in [[0,1],[1,2],[2,3],[3,7],[0,4],[4,7],[0,5],[5,6],[6,7]]:
+            nodes[a].connect(nodes[b])
+        self.assertEqual(nodes[0].pathTo(nodes[7]), [nodes[0], nodes[4], nodes[7]])
+
     def test_repr_string(self):
         node_1 = granavi.Node("nodeName")
         node_1_repr = node_1.__repr__()

@@ -40,25 +40,58 @@ class Node:
             yield(currentNode)
 
     def pathTo(self, other):
+        nodelist = {}
+        connected = []
+        other_id = id(other)
+
+        for current_node in self.__walkall__():
+            current_node_id = id(current_node)
+            nodelist[current_node_id] = current_node
+            for neighbor in current_node.connectedNodes():
+                neighbor_id = id(neighbor)
+                connected.append([current_node_id, neighbor_id])
+
+        weights = {}
+        visited = []
+        reversePath = [other_id]
+        weights[other_id] = 0
+
+        while len(reversePath) > 0:
+            current_node = reversePath.pop()
+            if current_node in visited:
+                continue
+            visited.append(current_node)
+            
+            for connection in filter(lambda n: n[1] == current_node, connected):
+                if connection[0] not in weights.keys():
+                    weights[connection[0]] = weights[connection[1]] + 1
+                if connection[0] not in visited:
+                    reversePath.append(connection[0])
+
+        if id(self) not in weights.keys():
+            raise Exception("Not connected")
+
         visited = []
         currentPath = [self]
         while currentPath[-1] != other:
             currentNode = currentPath[-1]
-            if currentNode not in visited:
-                visited.append(currentNode)
-            foundNeighbor = None
-            for neighbor in currentNode.connectedNodes():
-                if neighbor in visited:
+            currentNode_id = id(currentNode)
+            smallestNode_id = currentNode_id
+            smallestNode_value = weights[currentNode_id]
+            for connection in connected:
+                node_from = connection[0]
+                if node_from != currentNode_id:
                     continue
-                if foundNeighbor is None or neighbor is other:
-                    foundNeighbor = neighbor
-            if foundNeighbor is None:
-                if currentNode is self:
-                    raise Exception("Not connected")
-                else:
-                    currentPath.pop()
+                node_to = connection[1]
+                if weights[node_to] < smallestNode_value:
+                    smallestNode_id = node_to
+                    smallestNode_value = weights[node_to]
+
+            if smallestNode_id:
+                currentPath.append(nodelist[smallestNode_id])
             else:
-                currentPath.append(foundNeighbor)
+                if self == currentNode:
+                    raise Exception("Not connected")
         
         return currentPath
 
