@@ -39,17 +39,36 @@ class Node:
                     walkthese.append(neighbor)
             yield(currentNode)
 
-    def pathTo(self, other):
+    def pathTo(self, other, only=None):
         nodelist = {}
         connected = []
         other_id = id(other)
+
+        if only is not None:
+            foundOther = False
+            for nodeclass in only:
+                if not issubclass(nodeclass, Node):
+                    raise ValueError("Only contains classes which are not a subclass of Node: " + str(nodeclass))
+                if isinstance(other, nodeclass):
+                    foundOther = True
+            if not foundOther:
+                raise ValueError("Other is not a subclass of only")
+
+        if not isinstance(other, Node):
+            raise ValueError("Other is not a instance of class Node or subclass: " + str(type(other)))
 
         for current_node in self.__walkall__():
             current_node_id = id(current_node)
             nodelist[current_node_id] = current_node
             for neighbor in current_node.connectedNodes():
                 neighbor_id = id(neighbor)
-                connected.append([current_node_id, neighbor_id])
+                neighborIsSubclass = False
+                if only is not None:
+                    for nodeclass in only:
+                        if isinstance(neighbor, nodeclass):
+                            neighborIsSubclass = True
+                if only is None or neighborIsSubclass:
+                    connected.append([current_node_id, neighbor_id])
 
         weights = {}
         visited = []

@@ -90,3 +90,17 @@ class NodeTest(unittest.TestCase):
         node_2 = TestNode("hallo")
         node_1.connect(node_2)
         self.assertEqual(node_1.pathTo(node_2), [node_1, node_2])
+
+    def test_subclass_path(self):
+        node_1 = granavi.Node("wrongNode")
+        class TestNode(granavi.Node):
+            pass
+        testnodes = [TestNode(str(i)) for i in range(4)]
+        # t0-node_1-t3
+        #  \-t1-t2--/
+        testnodes[0].connect(node_1)
+        node_1.connect(testnodes[3])
+        for a, b in [[0, 1], [1, 2], [2, 3]]:
+            testnodes[a].connect(testnodes[b])
+        self.assertEqual(testnodes[0].pathTo(testnodes[3], only=[TestNode]), [testnodes[i] for i in [0, 1, 2, 3]])
+
