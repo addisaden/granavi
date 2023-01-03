@@ -25,19 +25,32 @@ class Node:
     def connectedNodes(self):
         return self.__connectedNodes__
 
-    def __walkall__(self):
+    def __walkall__(self, only=None):
         visited = []
         walkthese = [self]
         firstRun = True
+        if only is not None:
+            for nodeclass in only:
+                if not issubclass(nodeclass, Node):
+                    raise ValueError("Only contains classes which are not a subclass of Node: " + str(nodeclass))
+
         while len(walkthese) > 0:
             currentNode = walkthese.pop()
+            currentNodeFound = False
+            if only is not None:
+                for nodeclass in only:
+                    if isinstance(currentNode, nodeclass):
+                        currentNodeFound = True
+                
             if currentNode not in visited:
                 visited.append(currentNode)
                 for neighbor in currentNode.connectedNodes():
                     if neighbor in visited:
                         continue
                     walkthese.append(neighbor)
-            yield(currentNode)
+
+            if only is None or currentNodeFound:
+                yield(currentNode)
 
     def pathTo(self, other, only=None):
         nodelist = {}
@@ -114,9 +127,9 @@ class Node:
         
         return currentPath
 
-    def search(self, searchTerm):
+    def search(self, searchTerm, only=None):
         result = []
-        for currentNode in self.__walkall__():
+        for currentNode in self.__walkall__(only=only):
             found = False
             if isinstance(searchTerm, str):
                 if currentNode.name.find(searchTerm) > -1:
