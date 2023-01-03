@@ -1,3 +1,6 @@
 *.py[oc]
 *~
 *\#*
+.venv
+dist/
+*.egg-info/
