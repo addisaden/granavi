@@ -14,3 +14,6 @@ upload-test:
 
 upload:
 	python -m twine upload dist/*
+
+doc:
+	sphinx-build -b html docs/source docs/build
