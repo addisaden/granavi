@@ -14,3 +14,14 @@ class SessionTest(unittest.TestCase):
         self.assertEqual(node.session, session) # self.__getattr__(self, name)
         self.assertTrue(node in session) # self.__contains__(self, item)
         # https://rszalski.github.io/magicmethods/
+
+    def test_connect_mixed_nodes(self):
+        session = granavi.Session("test")
+        a = granavi.Node("a", session=session)
+        b = granavi.Node("b", session=session)
+        c = granavi.Node("c")
+        a.connect(b)
+        self.assertTrue(a.isConnected(b))
+        with self.assertRaises(AttributeError):
+            a.connect(c)
+        self.assertFalse(a.isConnected(c))

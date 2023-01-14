@@ -1,6 +1,9 @@
 class Node:
-    def __init__(self, name, description=None):
+    def __init__(self, name, description=None, session=None):
         self.name = name
+        self.__session = session
+        if self.__session is not None:
+            session.add(self)
         self.description = description
         if not isinstance(name, type("")):
             raise ValueError("name is not a string")
@@ -8,9 +11,22 @@ class Node:
             raise ValueError("description is not a string")
         self.__connectedNodes__ = []
 
+    def __getattr__(self, name):
+        if name == "session":
+            return self.__session
+        return super().__getattr__(name)
+
+    def __setattr__(self, name, value):
+        if name == "session":
+            raise AttributeError("Can't set session again")
+        return super().__setattr__(name, value)
+
     def connect(self, other, bidirect=False):
         if not isinstance(other, Node):
             raise ValueError("Wrong type of " + str(other) + ". Must be a granavi.Node")
+        if self.session is not None:
+            if self.session != other.session:
+                raise AttributeError("Nodes are not in the same session:", self.session.name)
         if other not in self.__connectedNodes__:
             self.__connectedNodes__.append(other)
         if bidirect:
