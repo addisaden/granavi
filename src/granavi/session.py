@@ -28,7 +28,7 @@ class Session:
     def __load__(self, pickled_string_or_filename, datastring=False):
         is_file = os.path.exists(pickled_string_or_filename)
         if datastring or (not is_file):
-            self.__nodes__ = pickle.loads(pickled_string)
+            self.__nodes__ = pickle.loads(pickled_string_or_filename)
         else:
             with open(pickled_string_or_filename, "rb") as f:
                 self.__nodes__ = pickle.load(f)

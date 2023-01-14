@@ -25,3 +25,23 @@ class SessionTest(unittest.TestCase):
         with self.assertRaises(AttributeError):
             a.connect(c)
         self.assertFalse(a.isConnected(c))
+
+    def test_session_bytestring(self):
+        s1 = granavi.Session("s1")
+        nodes = [granavi.Node(str(i), session=s1) for i in range(10)]
+        data = s1.save()
+        s2 = granavi.Session("s2", data)
+        self.assertEqual(len(s2.__nodes__), len(nodes))
+        for si, sn in enumerate(s1.__nodes__):
+            self.assertEqual(s2.__nodes__[si].name, sn.name)
+
+    def test_session_datafile(self):
+        testfilename = "/tmp/granavitestfile.testnodes"
+        s1 = granavi.Session("s1")
+        nodes = [granavi.Node(str(i), session=s1) for i in range(10)]
+        s1.save(testfilename)
+        s2 = granavi.Session("s2", testfilename)
+        self.assertEqual(len(s2.__nodes__), len(nodes))
+        for si, sn in enumerate(s1.__nodes__):
+            self.assertEqual(s2.__nodes__[si].name, sn.name)
+        
